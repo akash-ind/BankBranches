@@ -9,38 +9,34 @@ class Bank extends Component {
       pageSize: 10,
       offset:0,
       data: [],
-      loading:false
+      count:0,
+      loading:false,
     }
   }
-  searchAndFill = query=>{
-    //returns for the timing the all results on the page. 
-    this.setState({loading:true})
+  searchCity = (pageSize)=>{
+    // Returns the result fo the city
+    this.setState({
+      loading:true
+    })
+    console.log("pagesize", pageSize)
+    console.log("offset", this.state.offset)
     fetch(
-    `http://127.0.0.1:8000/api/branches?limit=${this.state.pageSize}&offset=${this.state.offset}&q=${query}`
+      `http://127.0.0.1:8000/api/branches/city?limit=${pageSize}&offset=${this.state.offset}&q=${this.props.city}`
     )
     .then(res=>res.json())
     .then(data=>{
       this.setState({
         data:data.results,
-        loading:false
+        loading:false,
+        count:data.count
       })
-    })
-  }
-  searchCity = (pageSize)=>{
-    // Returns the result fo the city
-    fetch(
-      `http://127.0.0.1:8000/api/branches/autocomplete?limit=${pageSize}&offset=${this.state.offset}&q=${this.props.city}`
-    )
-    .then(res=>res.json())
-    .then(data=>{
-      this.setState({data:data.results})
     })
   }
   changePageSize = e => {
     this.setState({
       pageSize: e.target.value
     })
-    this.searchCity(this.state.pageSize)
+    this.searchCity(e.target.value)
   }
 
   changePageNo = pageNo => {
@@ -49,14 +45,17 @@ class Bank extends Component {
     })
     this.searchCity(this.state.pageSize);
   }
-
+  componentDidUpdate(prev)
+  {
+    if (prev.city!==this.props.city)
+      this.searchCity(this.state.pageSize)  
+  }
   componentDidMount() {
-    
     this.searchCity(this.state.pageSize);
   }
   
   render() {
-    let index = 1;
+    let index = this.state.offset*this.state.pageSize+1;
     const renderList = branch=>{
       let branchName = branch.branch.toLowerCase();
       let city = branch.city.toLowerCase();
@@ -64,8 +63,7 @@ class Bank extends Component {
       let ifsc = branch.ifsc.toLowerCase();
       let address = branch.address.toLowerCase();
       let query = this.props.query.toLowerCase();
-      let query_city = this.props.city.toLowerCase();
-      if (city.indexOf(query_city) === -1 || (branchName.indexOf(query) === -1 &&
+      if ((branchName.indexOf(query) === -1 &&
         city.indexOf(query) === -1 && branchState.indexOf(query) === -1
         && ifsc.indexOf(query) === -1 && address.indexOf(query) === -1)) {
         return null;
@@ -104,7 +102,7 @@ class Bank extends Component {
         </Form.Control>
         <Paginate 
         changePage={this.changePageNo} 
-        itemNo={this.state.filteredData.length} 
+        itemNo={this.state.count} 
         pageSize={this.state.pageSize} 
         currentPageNo={this.state.offset+1} />
       </Container>

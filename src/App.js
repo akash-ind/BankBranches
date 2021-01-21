@@ -58,7 +58,6 @@ class App extends Component{
     this.state={
       city:"",
       query:"",
-      data:null,
     }
     this.changeCity = this.changeCity.bind(this);
     this.changeQuery = this.changeQuery.bind(this);
@@ -76,22 +75,15 @@ class App extends Component{
       query:value
     })
   }
-  changeData = data=>{
-    this.setState({
-      data:data
-    })
-  }
   render()
   {
       return(
           <div>
-            <BankSearch changeData={this.changeData}/>
             <City city={this.state.city} changeCity={this.changeCity} />
             <Search changeQuery={this.changeQuery} query={this.state.query}/>
-            <Bank city={this.state.city} data={this.state.data} query={this.state.query}/>
+            <Bank city={this.state.city} query={this.state.query}/>
           </div>
       )
-    }
   }
 }
 
