@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { Container,Row, Col,  Form, Table, Button } from 'react-bootstrap';
 import Paginate from './component/paginate';
-import {MdFavorite} from 'react-icons/md'
+import {MdFavorite} from 'react-icons/md';
 import {ServerDomain} from './globalInfo';
 import "./bank.css";
+import {
+  BrowserRouter as Router,
+  Link
+} from 'react-router-dom';
+
 
 class Bank extends Component {
   constructor(props) {
@@ -15,10 +20,15 @@ class Bank extends Component {
       count:0,
       loading:false,
       favourite:false,
+      favouriteChanged:false
     }
   }
   searchCity = (pageSize)=>{
     // Returns the result fo the city
+    if(this.state.favourite)
+    {
+      return this.favouriteBanks()
+    }
     this.setState({
       loading:true
     })
@@ -29,7 +39,7 @@ class Bank extends Component {
       offset:this.state.offset,
       city:this.props.city,
     }
-    if(hasCache(url, params))
+    if(hasCache(url, params) && !(this.state.favouriteChanged))
     {
       console.log("Cached data");
       this.setData(getCache(url, params).data)
@@ -68,7 +78,6 @@ class Bank extends Component {
     this.setState({
       offset: pageNo-1
     }, ()=>this.searchCity(this.state.pageSize))
-    
   }
 
   invertFavourite = e=>{
@@ -84,10 +93,11 @@ class Bank extends Component {
     else{
       el.setAttribute("class", "favourite");
     }
+    this.setState({favouriteChanged:true})
   }
 
   favouriteBanks = e=>{
-    this.setState({offset:0,
+    this.setState({
        loading:true})
     fetch(`${ServerDomain}/api/get-favourite/?limit=${this.state.pageSize}&offset=${this.state.offset}`)
     .then(res=>res.json())
@@ -101,12 +111,16 @@ class Bank extends Component {
     })
   }
 
+  handleFavouriteClick= e=>{
+    this.setState({
+      offset:0
+    }, ()=>this.favouriteBanks())
+  }
   allBanks = e=>{
     this.setState({
       favourite:false,
       offset:0
-    })
-    this.searchCity(this.state.pageSize)
+    }, ()=>this.searchCity(this.state.pageSize))
   }
 
   componentDidUpdate(prev)
@@ -138,24 +152,25 @@ class Bank extends Component {
         return (
         <tr key={branch.id}>
           <td>{index++}</td>
-          <td>{branch.branch}</td>
+          <td><Link to={"bank/"+branch.id}>{branch.branch}</Link></td>
           <td>{branch.city}</td>
           <td>{branch.state}</td>
           <td>{branch.ifsc}</td>
-          <td>{branch.favourite?<MdFavorite className="favourite" data-key={branch.id} onClick={this.invertFavourite}/>:
-          <MdFavorite data-key={branch.id} onClick={this.invertFavourite}/>}</td>
+          <td>{branch.favourite?<MdFavorite className="favourite scale" data-key={branch.id} onClick={this.invertFavourite}/>:
+          <MdFavorite data-key={branch.id} className="scale" onClick={this.invertFavourite}/>}</td>
         </tr>)
       }
     }
     const {favourite} = this.state
     return (
+      <Router>
       <Container>
         <Row className="mb-4">
           <Button variant= {favourite?"primary-outline":"primary"} onClick={this.allBanks}>All Banks</Button>
-          <Button variant = {favourite?"primary":"primary-outline"} onClick={this.favouriteBanks}>Favourite Banks</Button>
+          <Button variant = {favourite?"primary":"primary-outline"} onClick={this.handleFavouriteClick}>Favourite Banks</Button>
         </Row>
         
-        <Table responsive className="set-height">
+        <Table responsive>
           <thead>
             <tr>
               <th>Sno.</th>
@@ -167,7 +182,9 @@ class Bank extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.data.map(branch=>renderList(branch))}
+            {this.state.loading?(
+            <div className="set-height">Loading...</div>):
+            this.state.data.map(branch=>renderList(branch))}
           </tbody>
         </Table>
         <Row className="mb-3">
@@ -186,6 +203,7 @@ class Bank extends Component {
         pageSize={this.state.pageSize} 
         currentPageNo={this.state.offset+1} />
       </Container>
+      </Router>
     )
   }
 }

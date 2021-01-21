@@ -3,6 +3,12 @@
 }
 
 .set-height{
-    height: 500px;
-    overflow: scroll;
+    min-height: 500px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.scale{
+    font-size: 40px;
 }
