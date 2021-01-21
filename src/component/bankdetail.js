@@ -56,7 +56,6 @@ class BankDetail extends Component{
                         <th>City</th>
                         <th>State</th>
                         <th>IFSC</th>
-                        <th>Favourite</th>
                         </tr>
                     </thead>
                     <tbody>

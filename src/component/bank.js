@@ -5,7 +5,7 @@ import {MdFavorite} from 'react-icons/md';
 import {ServerDomain} from '../globalInfo';
 import "../css/bank.css";
 import {
-  BrowserRouter as Router,
+  withRouter,
   Link
 } from 'react-router-dom';
 
@@ -48,8 +48,11 @@ class Bank extends Component {
       fetch(
         url
       )
-      .then(res=>res.json())
+      .then(res=>{
+        console.log(res);
+        return res.json()})
       .then(data=>{
+        console.log(data)
         this.setData(data);
         this.props.cacheActions.setCache(url, params, data);
       })
@@ -163,7 +166,6 @@ class Bank extends Component {
     }
     const {favourite} = this.state
     return (
-      <Router>
       <Container>
         <Row className="mb-4">
           <Button variant= {favourite?"primary-outline":"primary"} onClick={this.allBanks}>All Banks</Button>
@@ -204,10 +206,9 @@ class Bank extends Component {
         pageSize={this.state.pageSize} 
         currentPageNo={this.state.offset+1} />
       </Container>
-      </Router>
     )
   }
 }
 
 
-export default Bank;
+export default withRouter(Bank);
