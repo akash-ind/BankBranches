@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import {Container,Row, Col, Form, Table} from 'react-bootstrap';
-import "../paginate.css"
+import {Container,Row, Col, Table} from 'react-bootstrap';
+import "../css/paginate.css"
 
 class Paginate extends Component{
-    constructor(props)
-    {
-        super(props);
-    }
-    
+  
     
     handleClick = event=>{
         const pageNo = event.target.getAttribute('data-value') 

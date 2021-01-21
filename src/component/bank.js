@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Container,Row, Col,  Form, Table, Button } from 'react-bootstrap';
-import Paginate from './component/paginate';
+import Paginate from './paginate';
 import {MdFavorite} from 'react-icons/md';
-import {ServerDomain} from './globalInfo';
-import "./bank.css";
+import {ServerDomain} from '../globalInfo';
+import "../css/bank.css";
 import {
   BrowserRouter as Router,
   Link
@@ -182,10 +182,11 @@ class Bank extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.loading?(
-            <div className="set-height">Loading...</div>):
-            this.state.data.map(branch=>renderList(branch))}
+          {this.state.loading?
+            <div className="set-height">Loading...</div>
+            :this.state.data.map(branch=>renderList(branch))}
           </tbody>
+      
         </Table>
         <Row className="mb-3">
           <Col xs={3} md={2} lg={1}>

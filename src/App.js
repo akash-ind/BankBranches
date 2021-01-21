@@ -1,22 +1,18 @@
-import './App.css';
+import './css/App.css';
 import React, { Component } from 'react';
-import {Container, Row, Col, Form, Table} from 'react-bootstrap';
-import Bank from './bank';
+import {Container, Row, Col, Form} from 'react-bootstrap';
+import Bank from './component/bank';
 import Cache from 'react-api-cache';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 import BankDetail from './component/bankdetail';
 
 
 class City extends Component{
-  constructor(props)
-  {
-    super(props);
-  }
+
 
   changeCity = e=>{
     this.props.changeCity(e.target.value)
@@ -40,10 +36,7 @@ class City extends Component{
 
 
 class Search extends Component{
-  constructor(props)
-  {
-    super(props);
-  }
+  
   changeQuery = e=>{
     this.props.changeQuery(e.target.value)
   }

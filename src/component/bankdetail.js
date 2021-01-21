@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {Container, Row, Col, Form, Table} from 'react-bootstrap';
+import {Container, Row, Col, Table} from 'react-bootstrap';
 import {ServerDomain} from '../globalInfo'
 import {MdFavorite} from 'react-icons/md';
-import "../bank.css";
+import "../css/bank.css";
 import {withRouter} from 'react-router-dom';
 
 class BankDetail extends Component{
