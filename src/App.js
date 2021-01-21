@@ -1,8 +1,8 @@
 import './App.css';
 import React, { Component } from 'react';
-import {Container, Form, Table} from 'react-bootstrap';
+import {Container, Row, Col, Form, Table} from 'react-bootstrap';
 import Bank from './bank';
-import BankSearch from './banksearch';
+import Cache from 'react-api-cache';
 
 
 class City extends Component{
@@ -78,11 +78,24 @@ class App extends Component{
   render()
   {
       return(
-          <div>
-            <City city={this.state.city} changeCity={this.changeCity} />
-            <Search changeQuery={this.changeQuery} query={this.state.query}/>
-            <Bank city={this.state.city} query={this.state.query}/>
-          </div>
+        <Cache>
+          {({store, actions})=>(
+            <Container>
+              <h3>Bank List</h3>
+              <Row className="justify-content-between">
+                <Col xs={12} lg={4} className="mb-2">
+                  <City city={this.state.city} changeCity={this.changeCity} />
+                </Col>
+                <Col xs={12} lg={4} className = "mb-2">
+                  <Search changeQuery={this.changeQuery} query={this.state.query}/>
+                </Col>
+              </Row>
+              <Row className>
+                <Bank city={this.state.city} query={this.state.query} cacheActions={actions}/>
+              </Row>
+            </Container>
+          )}
+        </Cache>
       )
   }
 }

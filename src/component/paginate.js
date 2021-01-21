@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {Container, Form, Table} from 'react-bootstrap';
-
+import {Container,Row, Col, Form, Table} from 'react-bootstrap';
+import "../paginate.css"
 
 class Paginate extends Component{
     constructor(props)
@@ -34,6 +34,12 @@ class Paginate extends Component{
         for(let i = Math.max(1, currentPage-3);i<=currentPage;i++)
         {
             limit--;
+            if(i === currentPage)
+            {
+                tempPageNo.push(<td key={i} className="selected" data-value={i} onClick={this.handleClick}>{i}</td>);
+                lastEntered = i;
+                continue;
+            }
             tempPageNo.push(<td key={i} data-value={i} onClick={this.handleClick}>{i}</td>);
             lastEntered = i;
         }
@@ -48,13 +54,19 @@ class Paginate extends Component{
         if(lastEntered<pages)
             tempPageNo.push(<td key={pages} data-value={pages} onClick={this.handleClick}>{pages}</td>)
         return(
-            <Table>
-                <tbody>
-                <tr>
-                    {tempPageNo}
-                </tr>
-                </tbody>
-            </Table>
+            <Container>
+                <Row className="justify-content-center">
+                    <Col sm="auto">
+                    <Table bordered>
+                        <tbody>
+                        <tr>
+                            {tempPageNo}
+                        </tr>
+                        </tbody>
+                    </Table>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }

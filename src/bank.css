@@ -1,0 +1,8 @@
+.favourite{
+    fill: red;
+}
+
+.set-height{
+    height: 500px;
+    overflow: scroll;
+}
