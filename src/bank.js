@@ -33,10 +33,13 @@ class Bank extends Component {
     })
   }
   changePageSize = e => {
-    this.setState({
-      pageSize: e.target.value
-    })
-    this.searchCity(e.target.value)
+    if(e.target.value!=0)
+    {
+      this.setState({
+        pageSize: e.target.value
+      })
+      this.searchCity(e.target.value)
+    }
   }
 
   changePageNo = pageNo => {
