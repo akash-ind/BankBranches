@@ -20,7 +20,7 @@ class Bank extends Component {
       count:0,
       loading:false,
       favourite:false,
-      favouriteChanged:false
+      favouriteBanks:new Set(),
     }
   }
   searchCity = (pageSize)=>{
@@ -33,13 +33,13 @@ class Bank extends Component {
       loading:true
     })
     const { hasCache, getCache } = this.props.cacheActions
-    let url = `${ServerDomain}/api/branches/city?limit=${pageSize}&offset=${this.state.offset}&q=${this.props.city}`
+    let url = `${ServerDomain}/api/branches/city?limit=${pageSize}&offset=${this.state.offset*pageSize}&q=${this.props.city}`
     const params = {
-      pageSize:this.state.pageSize,
-      offset:this.state.offset,
+      pageSize:pageSize,
+      offset:this.state.offset*pageSize,
       city:this.props.city,
     }
-    if(hasCache(url, params) && !(this.state.favouriteChanged))
+    if(hasCache(url, params))
     {
       console.log("Cached data");
       this.setData(getCache(url, params).data)
@@ -73,14 +73,13 @@ class Bank extends Component {
       this.setState({
         pageSize: e.target.value,
         offset: 0
-      })
-      this.searchCity(e.target.value)
+      }, ()=>this.searchCity(e.target.value))
     }
   }
 
   changePageNo = pageNo => {
     this.setState({
-      offset: (pageNo-1)*this.state.pageSize
+      offset: (pageNo-1)
     }, ()=>this.searchCity(this.state.pageSize))
   }
 
@@ -93,11 +92,21 @@ class Bank extends Component {
     if(el.getAttribute('class')==='favourite')
     {
       el.setAttribute('class', "");
+      let favouriteBanks = this.state.favouriteBanks;
+      favouriteBanks.delete(id)
+      this.setState({
+        favouriteBanks: favouriteBanks
+      })
     }
     else{
       el.setAttribute("class", "favourite");
+      let favouriteBanks = this.state.favouriteBanks;
+      favouriteBanks.add(id)
+      this.setState({
+        favouriteBanks: favouriteBanks
+      }, ()=>console.log("favorite", this.state.favouriteBanks))
     }
-    this.setState({favouriteChanged:true})
+    
   }
 
   favouriteBanks = e=>{
@@ -160,7 +169,7 @@ class Bank extends Component {
           <td>{branch.city}</td>
           <td>{branch.state}</td>
           <td>{branch.ifsc}</td>
-          <td>{branch.favourite?<MdFavorite className="favourite scale" data-key={branch.id} onClick={this.invertFavourite}/>:
+          <td>{(branch.favourite || this.state.favouriteBanks.has(branch.id.toString()))?<MdFavorite className="favourite scale" data-key={branch.id} onClick={this.invertFavourite}/>:
           <MdFavorite data-key={branch.id} className="scale" onClick={this.invertFavourite}/>}</td>
         </tr>)
       }
