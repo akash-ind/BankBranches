@@ -89,17 +89,17 @@ class Bank extends Component {
     fetch(`${ServerDomain}/api/invert-favourite/?id=${id}`)
     .then(res=>res.json())
     .then(data=>console.log(data))
-    if(el.getAttribute('class')==='favourite')
+    if(el.getAttribute('class')==='scale favourite')
     {
-      el.setAttribute('class', "");
+      el.setAttribute('class', "scale");
       let favouriteBanks = this.state.favouriteBanks;
       favouriteBanks.delete(id)
       this.setState({
         favouriteBanks: favouriteBanks
-      })
+      }, ()=>console.log("favorite removed", this.state.favouriteBanks))
     }
     else{
-      el.setAttribute("class", "favourite");
+      el.setAttribute("class", "scale favourite");
       let favouriteBanks = this.state.favouriteBanks;
       favouriteBanks.add(id)
       this.setState({
@@ -169,7 +169,7 @@ class Bank extends Component {
           <td>{branch.city}</td>
           <td>{branch.state}</td>
           <td>{branch.ifsc}</td>
-          <td>{(branch.favourite || this.state.favouriteBanks.has(branch.id.toString()))?<MdFavorite className="favourite scale" data-key={branch.id} onClick={this.invertFavourite}/>:
+          <td>{(branch.favourite || this.state.favouriteBanks.has(branch.id.toString()))?<MdFavorite className="scale favourite" data-key={branch.id} onClick={this.invertFavourite}/>:
           <MdFavorite data-key={branch.id} className="scale" onClick={this.invertFavourite}/>}</td>
         </tr>)
       }
