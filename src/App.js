@@ -80,7 +80,7 @@ class App extends Component{
       return(
         <Cache>
           {({store, actions})=>(
-            <Router>
+            <Router basename={process.env.PUBLIC_URL}>
               <Switch>
                 <Route exact path="/">
                 <Container>
