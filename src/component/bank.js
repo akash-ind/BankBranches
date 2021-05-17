@@ -68,10 +68,11 @@ class Bank extends Component {
   }
 
   changePageSize = e => {
-    if(e.target.value != 0)
+    if(e.target.value !== 0)
     {
       this.setState({
-        pageSize: e.target.value
+        pageSize: e.target.value,
+        offset: 0
       })
       this.searchCity(e.target.value)
     }
@@ -79,7 +80,7 @@ class Bank extends Component {
 
   changePageNo = pageNo => {
     this.setState({
-      offset: pageNo-1
+      offset: (pageNo-1)*this.state.pageSize
     }, ()=>this.searchCity(this.state.pageSize))
   }
 
